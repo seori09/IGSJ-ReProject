@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.paymentMapper">
+
+<!-- 
+Table: paymentDTO
+Columns:
+paymentNum int PK 
+orderDetailNum int 
+paySet varchar(20) 
+payCompany varchar(20) 
+payMoney int 
+payRegDate datetime 
+payBank varchar(50)
+ -->
+ 
+ <!-- 결제정보 등록하기(paymentDTO) -->
+ <insert id="writePaymentInfo">
+ 	INSERT INTO PaymentDTO (paymentNum, orderDetailNum, paySet, payCompany, payMoney, payRegDate, payBank)
+	VALUES (paymentNum, (SELECT orderDetailNum FROM orderDetailDTO), #{paySet}, #{payCompany}, #{payMoney}, current_timestamp(), #{payBank});
+ </insert>
+ 
+<!-- 계좌이체: 개인결제정보테이블(paymentDTO)에 
+	[결제번호(paymentNum), 상세주문번호(orderDetailNum), 결제방법(paySet), 결제총금액(payMoney), 결제승인일시(payRegDate), 결제시거래은행(payBank)] 보내기-->
+	
+<!-- 카드결제: 개인결제정보테이블(paymentDTO)에 
+	[결제번호(paymentNum), 상세주문번호(orderDetailNum), 결제방법(paySet), 카드회사(payCompany) 결제총금액(payMoney), 결제승인일시(payRegDate)] 보내기-->
+
+<!-- 배송정보테이블(PostInformationDTO)에
+	[배송코드(PostCode], 상세주문번호(orderDetailNum), 우편번호(postAddress), 상세주소1(detailAddress), 상세주소2(detailAddress), 수령인(recipient), 수령인번호(recipient_phone) 보내기 -->
+
+<!-- 결제후상품정보출력테이블(OrderDetailDTO)에 
+	[상세주문번호(orderDetailNum), 주문번호(orderNum), 제품번호(pno), 상품개수(productCnt), 상품가격(productPrice)] 보내기 -->
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.boardMapper">
+	<!-- 
+		bno	int
+		writer	varchar(20)
+		title	varchar(50)
+		content	text
+		reg_date	datetime
+	 -->
+	 
+	 <!-- 공지사항 목록 불러오기 -->
+	 <select id="getBoardList" resultType="ezen.project.IGSJ.board.domain.BoardDTO">
+	 	select bno, writer, title, content, reg_date
+	 		from BoardDTO
+	 	order by bno desc;
+	 </select>
+	 
+	 <!-- 공지사항 등록하기 -->
+	 <insert id="noticeWrite" parameterType="ezen.project.IGSJ.board.domain.BoardDTO">
+	 	insert into BoardDTO (writer, title, content)
+	 		values (#{writer}, #{title}, #{content})
+	 </insert>
+	 
+	 <!-- 공지사항 조회하기 -->
+	 <select id="noticeView" parameterType="ezen.project.IGSJ.board.domain.BoardDTO" resultType="ezen.project.IGSJ.board.domain.BoardDTO">
+	 	select bno, writer, title, content, reg_date
+	 		from BoardDTO
+	 	where bno = #{bno}
+	 </select>
+	 
+	 <!-- 공지사항 수정하기	-->
+	 <update id="noticeModify" parameterType="ezen.project.IGSJ.board.domain.BoardDTO">
+	 	update BoardDTO
+	 		set
+	 			title = #{title},
+	 			content = #{content}
+	 	where bno = #{bno}
+	 </update>
+	 
+	 <!-- 공지사항 삭제하기 -->
+	 <delete id="noticeDel" parameterType="int">
+	 	delete from BoardDTO
+	 	where bno = #{bno}
+	 </delete>
+</mapper>

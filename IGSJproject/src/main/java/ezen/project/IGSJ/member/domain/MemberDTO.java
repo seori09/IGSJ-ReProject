@@ -23,8 +23,7 @@ public class MemberDTO {
 	private Date userJoinDate;
 	private int userVerify;
 	private String userBirth;
-	
-	
+
 	public String getUserId() {
 		return userId;
 	}
@@ -44,7 +43,7 @@ public class MemberDTO {
 	public String getUserPhoneNumber() {
 		return userPhoneNumber;
 	}
-	
+
 	public String getUserName() {
 		return userName;
 	}
@@ -91,10 +90,8 @@ public class MemberDTO {
 
 	@Override
 	public String toString() {
-		return "MemberDTO [userId=" + userId + ", userPwd=" + userPwd + ", userName=" + userName + ", userPhoneNumber="
-				+ userPhoneNumber + ", userEmail=" + userEmail + ", userJoinDate=" + userJoinDate + ", userVerify="
-				+ userVerify + ", userBirth=" + userBirth + "]";
+		return "MemberDTO [userId=" + userId + ", userPwd=" + userPwd + ", userName=" + userName + ", userPhoneNumber=" + userPhoneNumber
+				+ ", userEmail=" + userEmail + ", userJoinDate=" + userJoinDate + ", userVerify=" + userVerify + ", userBirth=" + userBirth + "]";
 	}
-
 
 }
