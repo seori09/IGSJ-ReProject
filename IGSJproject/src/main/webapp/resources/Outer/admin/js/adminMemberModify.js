@@ -98,7 +98,7 @@ function editInfo() {
 	
 }
 
-function removeMember() {
+function RemoveMember() {
 	
 	let removeYN = confirm("정말 탈퇴하시겠습니까? 탈퇴된 정보는 복구되지 않습니다.");
 	

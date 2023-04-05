@@ -52,4 +52,8 @@ public class MemberAddressDAOImpl implements MemberAddressDAO {
 		
 		return sqlSession.delete(NAME_SPACE + ".removeAddress", memberAddressDTO);
 	}
+	// 회원 탈퇴에 필요한 비밀번호 찾기
+	public MemberAddressDAOImpl() {
+		// TODO Auto-generated constructor stub
+	}
 }

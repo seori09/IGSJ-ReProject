@@ -14,8 +14,10 @@ public class ProductDTO {
 	private String userId; // 제품등록자
 
 	// 조인용 변수
+	private String originalFileName;
 	private String storedFileRootName;
-	private String thumb;
+	private String storedThumbNailName;
+	private String image;
 
 	public String getPno() {
 		return pno;
@@ -81,6 +83,14 @@ public class ProductDTO {
 		this.userId = userId;
 	}
 
+	public String getOriginalFileName() {
+		return originalFileName;
+	}
+
+	public void setOriginalFileName(String originalFileName) {
+		this.originalFileName = originalFileName;
+	}
+
 	public String getStoredFileRootName() {
 		return storedFileRootName;
 	}
@@ -89,19 +99,28 @@ public class ProductDTO {
 		this.storedFileRootName = storedFileRootName;
 	}
 
-	public String getThumb() {
-		return thumb;
+	public String getStoredThumbNailName() {
+		return storedThumbNailName;
 	}
 
-	public void setThumb(String thumb) {
-		this.thumb = thumb;
+	public void setStoredThumbNailName(String storedThumbNailName) {
+		this.storedThumbNailName = storedThumbNailName;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 	@Override
 	public String toString() {
 		return "ProductDTO [pno=" + pno + ", cno=" + cno + ", product_name=" + product_name + ", product_price=" + product_price + ", product_stock="
 				+ product_stock + ", product_description=" + product_description + ", product_regDate=" + product_regDate + ", userId=" + userId
-				+ ", storedFileRootName=" + storedFileRootName + ", thumb=" + thumb + "]";
+				+ ", originalFileName=" + originalFileName + ", storedFileRootName=" + storedFileRootName + ", storedThumbNailName="
+				+ storedThumbNailName + ", image=" + image + "]";
 	}
 
 }

@@ -21,5 +21,8 @@ public interface MemberService {
 
 	// 회원 탈퇴
 	public int removeMember(MemberDTO memberDTO) throws Exception;
+	
+	// 회원 탈퇴에 필요한 비밀번호 찾기
+	public String getPwd(String userId) throws Exception;
 
 }

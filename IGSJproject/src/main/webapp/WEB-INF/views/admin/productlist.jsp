@@ -8,34 +8,8 @@
 <head>
 <meta charset="UTF-8">
 <title>(Admin)상품목록보기</title>
+<link rel="stylesheet" href="/resources/Outer/admin/css/adminProductList.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
-<!--
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
--->
-<style>
-.listWrap {
-	width: 90%;
-	margin: 0 auto;
-}
-
-span{
-	padding: 10px;
-}
-
-th {
-	background: gray;
-}
-
-th, td {
-	text-align: center;
-	vertical-align: middle;
-	padding: 15px;
-	border-bottom: 1px solid #e9e9e9;
-}
-</style>
 </head>
 <body>
 
@@ -55,7 +29,6 @@ th, td {
 						<th style="width: fit-content;">제품등록일</th>
 						<th style="width: fit-content;">제품등록자</th>
 						<th style="width: fit-content;">카테고리</th>
-						<th style="width: fit-content;">관리</th>
 					</tr>
 				</thead>
 				<tbody style="text-align: center; vertical-align: middle;">
@@ -74,25 +47,22 @@ th, td {
 				-->
 					<c:forEach var="adminProductList" items="${adminProductList }">
 						<tr>
-							<td align="right">${adminProductList.pno}</td>
+							<td align="right"><font size="2">${adminProductList.pno}</font></td>
 							<td align="right">
 								<img alt="상품 이미지 로딩 실패" src="${adminProductList.storedFileRootName}" width="100" height="100">
 							</td>
 							<td align="right">
-								<a href="${contextPath}/product/productDetail?pno=${adminProductList.pno}">${adminProductList.product_name}</a>
+								<a href="${contextPath}/admin/productDetail?pno=${adminProductList.pno}">${adminProductList.product_name}</a>
 							</td>
-							<td align="right">${adminProductList.product_price}</td>
+							<td align="right">
+								<fmt:formatNumber value="${adminProductList.product_price}" pattern="###,###,###"></fmt:formatNumber>
+							</td>
 							<td align="right">${adminProductList.product_stock}</td>
 							<td align="right">
-								<fmt:formatDate value="${adminProductList.product_regDate}" pattern="yyyy.MM.dd  hh:mm" />
+								<fmt:formatDate value="${adminProductList.product_regDate}" pattern="yyyy.MM.dd hh:mm" />
 							</td>
 							<td align="right">${adminProductList.userId}</td>
 							<td align="right">${adminProductList.cno}</td>
-							<td>
-								<a href="/admin/productmodifypage">[수정]</a>
-								<br>
-								<a href="/admin/productdelete">[삭제]</a>
-							</td>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -161,6 +131,6 @@ th, td {
 
 	</div>
 
-	<script src="/resources/admin/adminProductList.js"></script>
+	<script src="/resources/Outer/admin/js/adminProductList.js"></script>
 </body>
 </html>

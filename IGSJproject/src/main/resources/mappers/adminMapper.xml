@@ -54,15 +54,15 @@
 	<select id="getProductList" parameterType="hashMap" resultType="ezen.project.IGSJ.product.domain.ProductDTO">
 		select
 
-		product.pno,
-		pft.storedFileRootName,
-		cno,
-		product_name,
-		product_price,
-		product_stock,
-		product_description,
-		product_regDate,
-		userId
+			product.pno,
+			pft.storedFileRootName,
+			cno,
+			product_name,
+			product_price,
+			product_stock,
+			product_description,
+			product_regDate,
+			userId
 
 		from ProductDTO as product
 		left outer join ProductFileDTO as pft
@@ -129,11 +129,15 @@
 	
 	<!-- 관리자 회원 정보 수정 -->
 	<update id="adminMemberModify" parameterType="ezen.project.IGSJ.member.domain.MemberDTO">
+	
 		update MemberDTO
 			set
 				userPwd = #{userPwd},
-				userEmail = #{userEmail}
+				userEmail = #{userEmail},
+				userVerify = #{userVerify}
+				
 		where userId = #{userId}
+		
 	</update>
 	<update id="adminAddressModify" parameterType="ezen.project.IGSJ.address.domain.MemberAddressDTO">
 		update MemberAddressDTO
@@ -159,5 +163,57 @@
 			from MemberDTO
 		where userId = #{userId};
 	</delete>
+	
+	<!-- 관리자 상품 조회 -->
+	<select id="adminProductViewPage" parameterType="String" resultType="ezen.project.IGSJ.product.domain.ProductDTO">
+		select
 
+			product.pno,
+			pft.originalFileName,
+			pft.storedFileRootName,
+			pft.storedThumbNailName,
+			cno,
+			product_name,
+			product_price,
+			product_stock,
+			product_description,
+			product_regDate,
+			userId
+
+		from ProductDTO as product
+		left outer join ProductFileDTO as pft
+		on product.pno = pft.pno
+		where product.pno = #{pno}
+		
+	</select>
+	
+	<!-- 관리자 상품 수정 -->
+	<update id="adminProductModify" parameterType="ezen.project.IGSJ.product.domain.ProductDTO">
+		update ProductDTO
+			set
+				cno = #{cno},
+				product_name = #{product_name},
+				product_price = #{product_price},
+				product_stock = #{product_stock},
+				product_description = #{product_description}
+		where pno = #{pno}
+	</update>
+	<!-- 이미지 수정 -->
+	<update id="adminProductFileModify" parameterType="ezen.project.IGSJ.productFile.domain.ProductFileDTO">
+		update ProductFileDTO
+			set
+				originalFileName	=	 #{originalFileName},
+				storedFileRootName  =    #{storedFileRootName},
+				storedThumbNailName =    #{storedThumbNailName}
+		where pno = #{pno}
+	</update>
+	<!-- //관리자 상품 수정 -->
+	
+	<!-- 관리자, 판매자 로그인 -->
+	<select id="managerLogin" parameterType="ezen.project.IGSJ.member.domain.MemberDTO" resultType="ezen.project.IGSJ.member.domain.MemberDTO">
+		select userId, userPwd, userVerify
+			from MemberDTO
+		where userId = #{userId}
+			and userPwd = #{userPwd}
+	</select>
 </mapper>

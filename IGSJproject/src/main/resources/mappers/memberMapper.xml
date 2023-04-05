@@ -2,6 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="mappers.memberMapper">
 
+	<!-- MemberDTO userId varchar(20) NO PRI userPwd varchar(500) NO userName varchar(15) NO userPhoneNumber varchar(20) NO userEmail varchar(40) NO userJoinDate datetime NO CURRENT_TIMESTAMP userVerify int NO 0 userBirth varchar(20) NO -->
+
 	<!-- 회원가입(회원정보) -->
 	<insert id="signUpMember" parameterType="ezen.project.IGSJ.member.domain.MemberDTO">
 
@@ -11,9 +13,11 @@
 
 	<!-- 로그인 기능 -->
 	<select id="memberLogin" parameterType="ezen.project.IGSJ.member.domain.MemberDTO" resultType="ezen.project.IGSJ.member.domain.MemberDTO">
+
 		SELECT *
 		FROM MemberDTO
 		WHERE userId = #{userId} AND userPwd = #{userPwd}
+
 	</select>
 
 	<!-- 회원가입 아이디 중복 체크 -->
@@ -24,6 +28,7 @@
 		WHERE userId = #{userId}
 
 	</select>
+
 
 	<!-- 회원 정보 수정 로직 -->
 	<update id="memberModify" parameterType="ezen.project.IGSJ.member.domain.MemberDTO">
@@ -42,11 +47,12 @@
 	<!-- 회원 정보 찾기 -->
 	<select id="memberProfile" parameterType="String" resultType="ezen.project.IGSJ.member.domain.MemberDTO">
 
-		SELECT userId, userPwd, userName, userPhoneNumber, userEmail, userBirth
+		SELECT userId, userName, userPhoneNumber, userEmail, userBirth
 		FROM MemberDTO
 		WHERE userId = #{userId}
 
 	</select>
+
 
 	<!-- 회원 탈퇴 -->
 	<delete id="removeMember" parameterType="ezen.project.IGSJ.member.domain.MemberDTO">
@@ -56,6 +62,15 @@
 		AND userPwd = #{userPwd}
 
 	</delete>
+
+	<!-- 회원 탈퇴에 필요한 비밀번호 찾기 -->
+	<select id="getPwd" parameterType="ezen.project.IGSJ.member.domain.MemberDTO" resultType="String">
+
+		SELECT userPwd
+		FROM MemberDTO
+		WHERE userId = #{userId}
+
+	</select>
 
 
 </mapper>

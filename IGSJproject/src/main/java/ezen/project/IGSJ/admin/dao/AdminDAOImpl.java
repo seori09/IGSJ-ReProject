@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import ezen.project.IGSJ.address.domain.MemberAddressDTO;
 import ezen.project.IGSJ.member.domain.MemberDTO;
 import ezen.project.IGSJ.product.domain.ProductDTO;
+import ezen.project.IGSJ.productFile.domain.ProductFileDTO;
 
 @Repository
 public class AdminDAOImpl implements AdminDAO {
@@ -23,6 +24,7 @@ public class AdminDAOImpl implements AdminDAO {
 	@Autowired
 	private SqlSession sqlSession;
 
+	// ***************************************회원***************************************
 	// 전체 회원 불러오기
 	@Override
 	public List<MemberDTO> getAllUsers(int displayTotalContent, int pageContent, String searchType, String keyword) throws Exception {
@@ -52,6 +54,41 @@ public class AdminDAOImpl implements AdminDAO {
 		return sqlSession.selectOne(NAME_SPACE + ".searchMember", searchData);
 	}
 
+	// 관리자 회원 정보 수정
+	@Override
+	public void adminMemberModify(MemberDTO memberDTO, MemberAddressDTO memberAddressDTO) throws Exception {
+
+		logger.info("관리자 회원 정보 수정 DAO");
+
+		sqlSession.update(NAME_SPACE + ".adminMemberModify", memberDTO);
+		sqlSession.update(NAME_SPACE + ".adminAddressModify", memberAddressDTO);
+	}
+
+	// 관리자 회원 선택에 따른 정보 가져오기
+	@Override
+	public MemberDTO adminSelectMember(String userId) throws Exception {
+
+		logger.info("관리자 회원 상세정보 조회 DAO, 조회된 회원 : {}", userId);
+
+		return sqlSession.selectOne(NAME_SPACE + ".adminSelectMember", userId);
+	}
+
+	@Override
+	public MemberAddressDTO adminSelectAddress(String userId) throws Exception {
+
+		return sqlSession.selectOne(NAME_SPACE + ".adminSelectAddress", userId);
+	}
+
+	// 관리자 회원 삭제
+	@Override
+	public void adminRemoveMember(String userId) throws Exception {
+
+		logger.info("관리자 회원 삭제 DAO");
+
+		sqlSession.delete(NAME_SPACE + ".adminRemoveMember", userId);
+	}
+
+	// ***************************************상품***************************************
 	// 전체 상품 목록 불러오기
 	@Override
 	public List<ProductDTO> getProductList(int displayTotalContent, int pageContent, String searchType, String keyword) throws Exception {
@@ -81,36 +118,32 @@ public class AdminDAOImpl implements AdminDAO {
 		return sqlSession.selectOne(NAME_SPACE + ".searchProduct", searchData);
 	}
 	
-	// 관리자 회원 정보 수정
+	// 관리자 상품 조회
 	@Override
-	public void adminMemberModify(MemberDTO memberDTO, MemberAddressDTO memberAddressDTO) throws Exception {
+	public ProductDTO adminProductViewPage(String pno) throws Exception {
 		
-		logger.info("관리자 회원 정보 수정 DAO");
+		logger.info("관리자 상품 정보 조회 : {}", pno);
 		
-		sqlSession.update(NAME_SPACE + ".adminMemberModify", memberDTO);
-		sqlSession.update(NAME_SPACE + ".adminAddressModify", memberAddressDTO);
+		return sqlSession.selectOne(NAME_SPACE + ".adminProductViewPage", pno);
 	}
 	
-	// 관리자 회원 선택에 따른 정보 가져오기
+	// 관리자 상품 수정
 	@Override
-	public MemberDTO adminSelectMember(String userId) throws Exception {
+	public void adminProductModify(ProductDTO productDTO, ProductFileDTO productFileDTO) throws Exception {
 		
-		logger.info("관리자 회원 상세정보 조회 DAO, 조회된 회원 : {}", userId);
+		logger.info("관리자 상품 수정 DAO");
 		
-		return sqlSession.selectOne(NAME_SPACE + ".adminSelectMember", userId);
-	}
-	@Override
-	public MemberAddressDTO adminSelectAddress(String userId) throws Exception {
-		
-		return sqlSession.selectOne(NAME_SPACE + ".adminSelectAddress", userId);
+		sqlSession.update(NAME_SPACE + ".adminProductModify", productDTO);
+		sqlSession.update(NAME_SPACE + ".adminProductFileModify", productFileDTO);
 	}
 	
-	// 관리자 회원 삭제
+	// ***************************************그 외***************************************
+	// 관리자, 판매자 로그인
 	@Override
-	public void adminRemoveMember(String userId) throws Exception {
+	public MemberDTO managerLogin(MemberDTO memberDTO) throws Exception {
 		
-		logger.info("관리자 회원 삭제 DAO");
+		logger.info("매니저 로그인 DAO");
 		
-		sqlSession.delete(NAME_SPACE + ".adminRemoveMember", userId);
+		return sqlSession.selectOne(NAME_SPACE + ".managerLogin", memberDTO);
 	}
 }

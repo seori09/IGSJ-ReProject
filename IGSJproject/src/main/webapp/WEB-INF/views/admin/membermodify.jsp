@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>${userInfo.userId }회원 상세 정보</title>
-<link rel="stylesheet" href="/resources/admin/adminMemberModify.css">
+<link rel="stylesheet" href="/resources/Outer/admin/css/adminMemberModify.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
@@ -45,17 +45,11 @@
 						<div id="phoneError" class="error"></div>
 						<br />
 						<b>회원구분</b>
-							<c:choose>
-								<c:when test="${userInfo.userVerify == 128}">
-									<span>관리자</span>
-								</c:when>
-								<c:when test="${userInfo.userVerify == 5}">
-									<span>판매자</span>
-								</c:when>
-								<c:otherwise>
-									<span>일반회원</span>
-								</c:otherwise>
-							</c:choose>
+						<select name="userVerify">
+							<option value="128" <c:if test="${userInfo.userVerify == 128}">selected</c:if>>관리자</option>
+							<option value="5" <c:if test="${userInfo.userVerify == 5}">selected</c:if>>판매자</option>
+							<option value="0" <c:if test="${userInfo.userVerify == 0}">selected</c:if>>일반회원</option>
+						</select>
 						<div id="phoneError" class="error"></div>
 						<br />
 						<div class="address">
@@ -79,6 +73,6 @@
 		</div>
 	</div>
 </body>
-<script src="/resources/admin/adminMemberModify.js"></script>
+<script src="/resources/Outer/admin/js/adminMemberModify.js"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 </html>

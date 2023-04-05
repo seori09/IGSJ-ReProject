@@ -65,4 +65,5 @@ public class MemberAddressController {
 		
 		return result;
 	}
+	// 회원 탈퇴에 필요한 비밀번호 찾기
 }

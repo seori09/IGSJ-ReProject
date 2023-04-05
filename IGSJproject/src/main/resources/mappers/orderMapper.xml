@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.orderMapper">
+
+	<!-- 주문 페이지 불러오기 -->
+	<select id="getOrderPage"
+		resultType="ezen.project.IGSJ.order.domain.OrderDTO">
+		select me.userId, userName, userPhoneNumber, postAddress,
+		address, detailAddress
+		From MemberDTO me
+		inner join MemberAddressDTO ma
+		on me.userId = ma.userId
+		where me.userId = #{userId}
+	</select>
+
+	<!-- 카트에 담긴 상품 정보 불러오기 -->
+	<select id="getProductOrderPage"
+		resultType="ezen.project.IGSJ.order.domain.OrderDTO"
+		parameterType="String">
+		select cd.userId, storedFileRootName, product_name, product_price, productCnt
+		from CartDTO cd
+		inner join ProductDTO pd
+		on
+		cd.pno = pd.pno
+		join ProductFileDTO pfd
+		on cd.pno = pfd.pno
+		where cd.userId = #{userId}
+	</select>
+
+	<!-- 수령인정보 등록하기(orderDTO) -->
+	<insert id="writeRecipientInfo"
+		parameterType="ezen.project.IGSJ.order.domain.OrderDTO">
+		INSERT INTO OrderDTO (orderNum, userId, order_date, post_address, detail_address, detail_address2, recipient, recipient_phone)
+		VALUES (CONCAT(DATE_FORMAT(NOW(),'%y%m%d'),'_', ''), #{userId}, current_timestamp(), #{post_address}, #{detail_address}, #{detail_address2}, #{recipient}, #{recipient_phone})
+	</insert>
+
+	<!-- 주문제품정보 등록하기(orderDetailDTO) -->
+	<insert id="writeProductInfo"
+		parameterType="ezen.project.IGSJ.order.domain.OrderDetailDTO">
+		INSERT INTO OrderDetailDTO (orderDetailNum, orderNum, pno, productCnt, productPrice, paymentStatus)
+		VALUES (orderDetailNum, (SELECT orderNum FROM orderDTO), #{pno}, #{productCnt}, #{productPrice}, '결제대기')
+	</insert>
+	
+	
+
+	<!-- 카트에 담긴 상품 정보 불러오기 -->
+	<!-- <select id="getProductOrderPage" resultType="ezen.project.IGSJ.order.domain.OrderDTO" 
+		parameterType="String"> select md.userId,storedFileRootName, product_name, 
+		product_price, productCnt from CartDTO cd inner join ProductDTO pd on cd.pno 
+		= pd.pno join ProductFileDTO pfd on cd.pno = pfd.pno join MemberDTO md on 
+		SUBSTRING_INDEX(cd.cartNum, '_', 1) = md.userId where md.userId = #{userId}; 
+		</select> -->
+
+
+
+
+
+
+	<!-- 3.결제버튼 눌렀을 때 (paymentMapper) -->
+
+
+
+	<!-- orderFinish -->
+	<!-- 결제정보에 개인결제정보테이블(paymentDTO) 가져오기 [결제방법(payset), 결제총금액(payMoney)] -->
+
+	<!-- 상품정보에 결제후상품정보출력테이블(OrderDetailDTO)가져오기 [제품이름(product_name), 상품개수(productCnt), 
+		상품가격(product_price)] -->
+
+	<!-- 배송지정보에 배송정보테이블(PostInformationDTO)가져오기 [수령인(recipient), 수령인전화번호(recipient_phone), 
+		우편번호(post_address), 상세주소1(detail_address), 상세주소2(detail_address2)] -->
+
+
+</mapper>

@@ -1,7 +1,11 @@
 package ezen.project.IGSJ.admin.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -14,12 +18,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ezen.project.IGSJ.address.domain.MemberAddressDTO;
 import ezen.project.IGSJ.admin.service.AdminService;
+import ezen.project.IGSJ.category.domain.CategoryDTO;
 import ezen.project.IGSJ.member.domain.MemberDTO;
 import ezen.project.IGSJ.product.domain.ProductDTO;
+import ezen.project.IGSJ.productFile.domain.ProductFileDTO;
+import ezen.project.IGSJ.seller.service.SellerService;
+import ezen.project.IGSJ.utils.AwsS3;
 import ezen.project.IGSJ.utils.pagination.PageIngredient;
+import net.sf.json.JSONArray;
 
 @Controller
 public class AdminController {
@@ -29,11 +40,25 @@ public class AdminController {
 	@Autowired
 	private AdminService adminService;
 
+	@Autowired
+	private SellerService sellerService;
+
+	@Resource(name = "uploadPath")
+	private String uploadPath;
+
 	// 관리자 페이지 입장
 	@RequestMapping(value = "/admin/mainpage", method = RequestMethod.GET)
-	public void adminMainPage() throws Exception {
+	public void adminMainPage(HttpServletRequest req) throws Exception {
 
 		logger.info("관리자 페이지 입장");
+
+	}
+	
+	// 관리자 페이지 입장
+	@RequestMapping(value = "/admin/admindetail", method = RequestMethod.GET)
+	public void adminDetailPage(HttpServletRequest req) throws Exception {
+		
+		logger.info("관리자 메뉴 페이지 입장");
 
 	}
 
@@ -107,6 +132,7 @@ public class AdminController {
 
 		return true;
 	}
+
 	// 관리자 인증번호 생성하기
 	@ResponseBody
 	@RequestMapping(value = "/admin/removeMember", method = RequestMethod.GET)
@@ -151,9 +177,113 @@ public class AdminController {
 
 	}
 
-	// 관리자 상품 조회
-	@RequestMapping(value = "/admin/productview", method = RequestMethod.GET)
-	public void methodName() throws Exception {
+	// 관리자 상품 정보 조회
+	@RequestMapping(value = "/admin/productDetail", method = RequestMethod.GET)
+	public String adminProductViewPage(@RequestParam("pno") String pno, ProductDTO productDTO, Model model) throws Exception {
 
+		logger.info("관리자 회원 정보 수정 페이지 접속");
+
+		productDTO = adminService.adminProductViewPage(pno);
+
+		model.addAttribute("productInfo", productDTO);
+
+		return "/admin/productdetail";
 	}
+
+	// 관리자 상품 정보 수정 페이지 진입
+	@RequestMapping(value = "/admin/productmodify", method = RequestMethod.GET)
+	public String adminProductModifyPage(@RequestParam("pno") String pno, ProductDTO productDTO, Model model) throws Exception {
+
+		logger.info("관리자 상품 정보 수정 페이지 접속");
+
+		List<CategoryDTO> category = null;
+
+		category = sellerService.getCategory();
+
+		model.addAttribute("category", JSONArray.fromObject(category));
+
+		productDTO = adminService.adminProductViewPage(pno);
+
+		model.addAttribute("productInfo", productDTO);
+
+		return "/admin/productmodify";
+	}
+
+	// 관리자 상품 정보 수정
+	@RequestMapping(value = "/admin/productmodify", method = RequestMethod.POST)
+	public String adminProductModify(ProductDTO productDTO, ProductFileDTO productFile,
+			@RequestParam("file") MultipartFile file, HttpServletRequest request) throws Exception {
+
+		logger.info("관리자 상품 정보 수정 시작 controller");
+		AwsS3 awsS3 = AwsS3.getInstance();
+		String s3ObjectUrl = null;
+
+		try {
+			// Upload file to S3 bucket
+			String fileName = file.getOriginalFilename();
+			InputStream is = file.getInputStream();
+
+			s3ObjectUrl = awsS3.upload(is, fileName, file.getContentType(), file.getSize());
+			
+			logger.info("파일 업로드 위치 : {}", s3ObjectUrl);
+			
+			if( productDTO.getOriginalFileName() != s3ObjectUrl) {
+				awsS3.delete(productDTO.getOriginalFileName());
+			}
+			productFile.setOriginalFileName(fileName);
+			productFile.setStoredFileRootName(s3ObjectUrl);
+
+			adminService.adminProductModify(productDTO, productFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		logger.info("제품 이미지까지 수정 완료");
+
+
+		return "redirect:/admin/productDetail?pno=" + productDTO.getPno();
+	}
+	
+	// 관리자, 판매자 로그인 페이지 진입
+	@RequestMapping(value = "/managerLoginPage", method = RequestMethod.GET)
+	public void managerLoginPage() throws Exception {
+		
+		logger.info("매니저 로그인 페이지 접속");
+		
+	}
+	
+	// 관리자, 판매자 로그인 메소드
+	@RequestMapping(value = "/managerLogin", method = RequestMethod.POST)
+	public String managerLogin(MemberDTO memberDTO, RedirectAttributes rda, HttpServletRequest req) throws Exception {
+			
+		logger.info("매니저 로그인 페이지 접속");
+		logger.info("memberDTO.getUserId()"+memberDTO.getUserId());
+		MemberDTO member = adminService.managerLogin(memberDTO);
+		HttpSession session = req.getSession();
+		
+		if (member == null) {
+			
+			rda.addFlashAttribute("managerLoginFalse", false);
+			logger.info("관리자 로그인 실패");
+			
+			return "redirect:/admin/managerLoginPage";
+			
+		} else {
+		if(member.getUserVerify() == 128) {
+			session.setAttribute("member", member);
+			return "redirect:/admin/mainpage";			
+		} else if(member.getUserVerify() == 5) {
+			session.setAttribute("member", member);
+			return "redirect:/seller/mainpage";
+		} else {
+			logger.info("일반 회원 로그인 차단");
+			
+			rda.addFlashAttribute("blockNomalMember" , false);
+			
+			return "redirect:/";
+		}
+		
+		}
+	}
+
 }

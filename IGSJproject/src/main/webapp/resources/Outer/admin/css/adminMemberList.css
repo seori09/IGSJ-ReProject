@@ -1,0 +1,21 @@
+@charset "UTF-8";
+
+.listWrap {
+	width: 90%;
+	margin: 0 auto;
+}
+
+th{
+	background: gray;
+}
+
+th, td {
+	text-align: center;
+	vertical-align: middle;
+	padding: 15px;
+	border-bottom: 1px solid #e9e9e9;
+}
+
+span {
+	margin: 10px;
+}

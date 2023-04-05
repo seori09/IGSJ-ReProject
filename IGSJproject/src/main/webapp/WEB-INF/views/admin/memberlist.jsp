@@ -8,36 +8,8 @@
 <head>
 <meta charset="UTF-8">
 <title>(Admin)회원 목록 보기</title>
+<link rel="stylesheet" href="/resources/Outer/admin/css/adminMemberList.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<style>
-#paging a {
-	text-decoration: none;
-	margin: 10px;
-	font-family: inherit;
-	font-size: medium;
-	font-weight: bold;
-}
-
-.listWrap {
-	width: 90%;
-	margin: 0 auto;
-}
-
-th{
-	background: gray;
-}
-
-th, td {
-	text-align: center;
-	vertical-align: middle;
-	padding: 15px;
-	border-bottom: 1px solid #e9e9e9;
-}
-
-span {
-	margin: 10px;
-}
-</style>
 </head>
 <body>
 
@@ -149,6 +121,6 @@ span {
 
 	</div>
 
-	<script src="/resources/admin/adminMemberList.js"></script>
+	<script src="/resources/Outer/admin/js/adminMemberList.js"></script>
 </body>
 </html>

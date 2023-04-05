@@ -2,22 +2,132 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="mappers.sellerMapper">
-	
-	<select id="getCategory"  resultType="ezen.project.IGSJ.category.domain.CategoryDTO" >
-	  			select case when category_level is null then 1 
-								  when cno is not null then 2
-         						  END AS big_ctg , cno, category_name, category_level
-					from CategoryDTO;
+
+	<select id="getCategory" resultType="ezen.project.IGSJ.category.domain.CategoryDTO">
+		select
+		case when category_level is null then 1
+		when cno is not null then 2
+		END AS big_ctg , cno, category_name, category_level
+		from CategoryDTO;
 	</select>
-	
+
 	<insert id="postRegister" parameterType="ezen.project.IGSJ.product.domain.ProductDTO">
 		insert into ProductDTO( pno, cno, product_name, product_price, product_stock, product_description,userId)
 		values ( #{pno}, #{cno}, #{product_name} ,#{product_price}, #{product_stock}, #{product_description},#{userId})
 	</insert>
-	
-	<insert id="imgRegister" parameterType="ezen.project.IGSJ.productFile.domain.ProductFileDTO" >
+
+	<insert id="imgRegister" parameterType="ezen.project.IGSJ.productFile.domain.ProductFileDTO">
 		insert into ProductFileDTO(pno,originalFileName,storedFileRootName,storedThumbNailName)
 		values ( #{pno}, #{originalFileName},#{storedFileRootName},#{storedThumbNailName})
 	</insert>
+	
+	<!-- 판매자 : 전체 상품 불러오기 -->
+	<select id="getProductList" parameterType="hashMap" resultType="ezen.project.IGSJ.product.domain.ProductDTO">
+		select
+
+		product.pno,
+		pft.storedFileRootName,
+		cno,
+		product_name,
+		product_price,
+		product_stock,
+		product_description,
+		product_regDate,
+		userId
+
+		from ProductDTO as product
+		left outer join ProductFileDTO as pft
+		on product.pno = pft.pno
+		where userId = #{userId} 
+
+
+		<if test="searchType.equals('product_name')">
+			and product_name like concat('%', #{keyword}, '%')
+		</if>
+		<if test="searchType.equals('cno')">
+			and cno between #{keyword} and #{keyword} + 100
+		</if>
+
+		order by product_name <!-- 검색결과 가나다순 정리 -->
+		limit #{displayTotalContent} , #{pageContent}
+
+	</select>
+
+	<!-- 검색된 결과에 일치하는 상품 -->
+	<select id="searchProduct" resultType="Int" parameterType="hashmap">
+
+		select count(*)
+		from ProductDTO
+		where userId = #{userId}
+
+
+		<if test="searchType.equals('product_name')">
+			and product_name like concat('%', #{keyword}, '%')
+		</if>
+		<if test="searchType.equals('cno')">
+			and cno between #{keyword} and #{keyword} + 100
+		</if>
+
+	</select>
+	
+	<!-- 판매자 상품 조회 -->
+	<select id="sellerProductViewPage" parameterType="String" resultType="ezen.project.IGSJ.product.domain.ProductDTO">
+		select
+
+			product.pno,
+			pft.originalFileName,
+			pft.storedFileRootName,
+			pft.storedThumbNailName,
+			cno,
+			product_name,
+			product_price,
+			product_stock,
+			product_description,
+			product_regDate,
+			userId
+
+		from ProductDTO as product
+		left outer join ProductFileDTO as pft
+		on product.pno = pft.pno
+		where product.pno = #{pno}
+		
+	</select>
+	
+	<!-- 판매자 상품 수정 -->
+	<update id="sellerProductModify" parameterType="ezen.project.IGSJ.product.domain.ProductDTO">
+		update ProductDTO
+			set
+				cno = #{cno},
+				product_name = #{product_name},
+				product_price = #{product_price},
+				product_stock = #{product_stock},
+				product_description = #{product_description}
+		where pno = #{pno}
+	</update>
+	<!-- 이미지 수정 -->
+	<update id="sellerProductFileModify" parameterType="ezen.project.IGSJ.productFile.domain.ProductFileDTO">
+		update ProductFileDTO
+			set
+				originalFileName	=	 #{originalFileName},
+				storedFileRootName  =    #{storedFileRootName},
+				storedThumbNailName =    #{storedThumbNailName}
+		where pno = #{pno}
+	</update>
+	
+	<!-- 판매자 상품 삭제 -->
+	<delete id="sellerRemoveProduct" parameterType="String">
+		delete 
+		from ProductDTO
+		where pno = #{pno}
+	</delete>
+	
+	<!-- 판매자 상품 이미지 삭제 -->
+	<delete id="sellerRemoveProductFile" parameterType="String">
+		delete 
+		from ProductFileDTO
+		where pno = #{pno}
+	</delete>
+	
+	
 
 </mapper>
