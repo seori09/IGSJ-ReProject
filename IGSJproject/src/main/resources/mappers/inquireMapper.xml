@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.inquireMapper">
+	
+	<!-- 제품 문의 목록 -->
+	<select id="inquireList" resultType="ezen.project.IGSJ.inquire.domain.InquireDTO">
+		SELECT inquireNum, userId, inquireTitle, inquireContent, inquireRegDate, pno
+		FROM InquireDTO
+		order by inquireNum desc
+	</select>
+	
+	<!-- 제품 문의 등록 -->
+	<insert id="inquireWrite" parameterType="ezen.project.IGSJ.inquire.domain.InquireDTO">
+		INSERT INTO InquireDTO(userId, inquireTitle, inquireContent)
+		values (#{userId}, #{inquireTitle}, #{inquireContent})
+	</insert>
+	
+	<!-- 문의 조회 -->
+	<select id="inquireView" parameterType="int" resultType="ezen.project.IGSJ.inquire.domain.InquireDTO">
+		select *
+		FROM InquireDTO
+		WHERE inquireNum = #{inquireNum}
+	</select>
+	
+	<!-- 문의내역 수정 -->
+	<update id="inquireModify" parameterType="ezen.project.IGSJ.inquire.domain.InquireDTO">
+		update InquireDTO
+		set 
+			inquireTitle = #{inquireTitle},
+			inquireContent = #{inquireContent}
+		WHERE inquireNum = #{inquireNum}
+	</update>
+	
+	<!-- 문의내역 삭제 -->
+	<delete id="inquireDelete" parameterType="int">
+		DELETE FROM InquireDTO
+		WHERE inquireNum = #{inquireNum}
+	</delete>
+	
+</mapper>

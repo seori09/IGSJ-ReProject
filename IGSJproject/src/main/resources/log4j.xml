@@ -1,20 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN"
 "http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/xml/doc-files/log4j.dtd">
-<log4j:configuration
-	xmlns:log4j="http://jakarta.apache.org/log4j/">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
 	<!-- Appenders -->
-	<appender name="console"
-		class="org.apache.log4j.ConsoleAppender">
+	<!-- 콘솔창에 로그 출력 -->
+	<appender name="console" class="org.apache.log4j.ConsoleAppender">
 		<param name="Target" value="System.out" />
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%-5p: %c - %m%n" />
+			<param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %-5p: %F:%L - %m%n" />
+		</layout>
+	</appender>
+	
+	<!-- 백업을 위해 파일로 로그 저장 -->
+	<appender name="console" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="file" value="c:/logtemp/logflie.log" />
+		<param name="Append" value="true" />
+		<param name="dataPattern" value=".yyyy-MM-dd" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %-5p: %F:%L - %m%n" />
 		</layout>
 	</appender>
 
 	<!-- Application Loggers -->
-	<logger name="com.project">
+	<logger name="ezen.project.IGSJ">
 		<level value="debug" />
 	</logger>
 
@@ -34,7 +43,7 @@
 	<logger name="org.springframework.web">
 		<level value="info" />
 	</logger>
-	
+
 	<!-- SQL 로그 출력을 위한 설정 추가 시작 -->
 	<logger name="jdbc.sqlonly" additivity="false">
 		<level value="info" />
